@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamics365.DLL.V8X", "Dynamics365.DLL.V8X\Dynamics365.DLL.V8X.csproj", "{55624D05-20D1-49EC-A0C2-3E296E157BA6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConnectToCRM", "ConnectToCRM", "{7BA80765-E2CF-47EA-ACDC-32D1F1C5C701}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectToCRM", "ConnectToCRM\ConnectToCRM.csproj", "{0B4FD433-34F4-4EF9-B918-8170FA349D61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,13 +13,16 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{55624D05-20D1-49EC-A0C2-3E296E157BA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{55624D05-20D1-49EC-A0C2-3E296E157BA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{55624D05-20D1-49EC-A0C2-3E296E157BA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{55624D05-20D1-49EC-A0C2-3E296E157BA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B4FD433-34F4-4EF9-B918-8170FA349D61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B4FD433-34F4-4EF9-B918-8170FA349D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B4FD433-34F4-4EF9-B918-8170FA349D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B4FD433-34F4-4EF9-B918-8170FA349D61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0B4FD433-34F4-4EF9-B918-8170FA349D61} = {7BA80765-E2CF-47EA-ACDC-32D1F1C5C701}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {60ED754D-BD99-4B5A-8BCE-ECD56C3F85FE}
