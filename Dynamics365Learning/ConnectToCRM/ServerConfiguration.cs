@@ -25,5 +25,10 @@ namespace ConnectToCRM
             DeviceCredentials = null;
             Credentials = null;
         }
+
+        public void GetServerConfiguration()
+        {
+            
+        }
     }
 }
