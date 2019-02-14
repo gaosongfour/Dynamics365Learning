@@ -12,8 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.ServiceModel;
 using System.ServiceModel.Description;
+using Microsoft.Xrm.Sdk;
 using Microsoft.Crm.Sdk.Messages;
+using System.Net;
 
 namespace ConnectToCRM
 {
@@ -49,6 +52,10 @@ namespace ConnectToCRM
                 TbxUserInfo.Text = response.UserId.ToString();
 
             }
+            catch (FaultException<OrganizationServiceFault> ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
@@ -74,19 +81,29 @@ namespace ConnectToCRM
                 if (string.IsNullOrWhiteSpace(port))
                     serverConfig.OrganizationUri = new Uri(string.Format("https://{0}/XRMServices/2011/Organization.svc", serverAddress));
                 else
-                    serverConfig.OrganizationUri = new Uri(string.Format("https://{0}:{1}/XRMServices/2011/Organization.svc", serverAddress,port));
+                    serverConfig.OrganizationUri = new Uri(string.Format("https://{0}:{1}/XRMServices/2011/Organization.svc", serverAddress, port));
 
                 serverConfig.Credentials = new ClientCredentials();
                 serverConfig.Credentials.UserName.UserName = string.Format("{0}@{1}", userName, userDomain);
                 serverConfig.Credentials.UserName.Password = CrmServiceHelper.ConvertToUnsecureString(userPassword);
             }
-            else if (authType == 1) //AD on-premise
+            else if (authType == 1) //AD on-premise, TO TEST
             {
+                var http = "http" + (useSSL ? "s" : null);
+                if (string.IsNullOrWhiteSpace(port))
+                    serverConfig.OrganizationUri = new Uri(string.Format("{0}://{1}/XRMServices/2011/Organization.svc", http, serverAddress));
+                else
+                    serverConfig.OrganizationUri = new Uri(string.Format("{0}://{1}:{2}/XRMServices/2011/Organization.svc", http, serverAddress, port));
+
+                serverConfig.Credentials = new ClientCredentials();
+                serverConfig.Credentials.Windows.ClientCredential = new NetworkCredential(userName, userPassword, userDomain);
+                //Or Use default windows crendential
+                //serverConfig.Credentials.Windows.ClientCredential = (NetworkCredential)CredentialCache.DefaultCredentials;
 
             }
-            else if (authType == 2)//online office365
+            else if (authType == 2)//online office365 not availiable
             {
-
+                //To do
             }
             else
                 throw new Exception("Invalid AuthType");
