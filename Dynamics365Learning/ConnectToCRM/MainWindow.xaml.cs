@@ -36,6 +36,12 @@ namespace ConnectToCRM
             //Load ComboBox from enum AuthType
             CbbAuthType.ItemsSource = Enum.GetValues(typeof(CrmAuthType)).Cast<CrmAuthType>();
             CbbAuthType.SelectedIndex = 0;
+
+            //Hidden Main Tab
+            TabMain.Visibility = Visibility.Hidden;
+
+            //AuthType
+            OnChangeAuthType();
         }
 
         private void BtnConnect_Click(object sender, RoutedEventArgs e)
@@ -48,8 +54,7 @@ namespace ConnectToCRM
                 WhoAmIRequest request = new WhoAmIRequest();
                 var response = (WhoAmIResponse)service.Execute(request);
 
-                TabConnect.Visibility = Visibility.Hidden;
-                TbxUserInfo.Text = response.UserId.ToString();
+                CrmConnectionSuccessful(response.UserId.ToString());
 
             }
             catch (FaultException<OrganizationServiceFault> ex)
@@ -72,7 +77,8 @@ namespace ConnectToCRM
                 {
                     WhoAmIRequest request = new WhoAmIRequest();
                     var response = (WhoAmIResponse)service.Execute(request);
-                    MessageBox.Show(response.UserId.ToString());
+
+                    CrmConnectionSuccessful(response.UserId.ToString());
                 }
                 else
                 {
@@ -111,9 +117,9 @@ namespace ConnectToCRM
                 serverConfig.Credentials.UserName.Password = CrmServiceHelper.ConvertToUnsecureString(userPassword);
 
                 //Optional, construct the crmConnString if needed
-                var orgName = serverAddress.Substring(0,serverAddress.IndexOf("."));
-                serverConfig.crmConnString =string.Format( "AuthType=IFD; Url=https://{0}/{1}; Domain={2};Username={3}; Password={4}"
-                   ,serverAddress,orgName,userDomain, serverConfig.Credentials.UserName.UserName, serverConfig.Credentials.UserName.Password);
+                var orgName = serverAddress.Substring(0, serverAddress.IndexOf("."));
+                serverConfig.crmConnString = string.Format("AuthType=IFD; Url=https://{0}/{1}; Domain={2};Username={3}; Password={4}"
+                   , serverAddress, orgName, userDomain, serverConfig.Credentials.UserName.UserName, serverConfig.Credentials.UserName.Password);
 
             }
             else if (authType == 1) //AD on-premise, TO TEST
@@ -142,7 +148,41 @@ namespace ConnectToCRM
 
         private void BtnDisconnect_Click(object sender, RoutedEventArgs e)
         {
+            TabConnect.IsSelected = true;
             TabConnect.Visibility = Visibility.Visible;
+
+            TabMain.Visibility = Visibility.Hidden;
+            TbxUserInfo.Text = null;
+        }
+
+        private void CbbAuthType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            OnChangeAuthType();
+        }
+
+        private void OnChangeAuthType()
+        {
+            if (CbbAuthType.SelectedIndex == 0) //IFD
+            {
+                LblCrmServerEx.Content= "ex: orgname.domainname.com(without https://)";
+            }
+            else if (CbbAuthType.SelectedIndex == 1) //AD
+            {
+                LblCrmServerEx.Content = "ex: servername/orgname";
+            }
+            else
+            {
+                LblCrmServerEx.Content = "ex: to complete";
+            }
+        }
+
+        private void CrmConnectionSuccessful(string message)
+        {
+            TabConnect.Visibility = Visibility.Hidden;
+
+            TabMain.Visibility = Visibility.Visible;
+            TabMain.IsSelected = true;
+            TbxUserInfo.Text = "Connect to CRM OK " + message;
         }
 
     }

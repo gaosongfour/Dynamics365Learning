@@ -24,27 +24,28 @@
                     <Label Content="User Name" HorizontalAlignment="Left" Margin="20,202,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.217,-0.308" Grid.Column="2"/>
                     <Label Content="Password" HorizontalAlignment="Left" Margin="20,247,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.217,-0.308" Grid.Column="2"/>
                     <Label Content="Domain" HorizontalAlignment="Left" Margin="20,296,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.217,-0.308" Grid.Column="2"/>
-                    <Label Content="Port" HorizontalAlignment="Left" Margin="20,94,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.217,-0.308" Grid.Column="2"/>
+                    <Label Content="Port" HorizontalAlignment="Left" Margin="20,126,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.217,-0.308" Grid.Column="2"/>
                     <PasswordBox x:Name="TbxPassword" HorizontalAlignment="Left" Margin="123,255,0,0" VerticalAlignment="Top" Width="231" Grid.Column="2"/>
-                    <CheckBox x:Name="CbxUseSSL" Content="Use SSL?(Https)" HorizontalAlignment="Left" Margin="285,97,0,0" VerticalAlignment="Top" Height="23" Width="116" Grid.Column="2"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" Margin="123,97,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.Column="2"/>
-                    <TextBox x:Name="TbxPort" HorizontalAlignment="Left" Height="23" Margin="123,97,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" AutomationProperties.HelpText="5555" Grid.Column="2"/>
+                    <CheckBox x:Name="CbxUseSSL" Content="Use SSL?(Https)" HorizontalAlignment="Left" Margin="274,128,0,0" VerticalAlignment="Top" Height="24" Width="116" Grid.Column="2"/>
+                    <TextBox x:Name="TbxPort" HorizontalAlignment="Left" Height="24" Margin="123,128,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" AutomationProperties.HelpText="5555" Grid.Column="2"/>
                     <TextBox x:Name="TbxDomain" HorizontalAlignment="Left" Height="23" Margin="123,299,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" Grid.Column="2"/>
                     <TextBox x:Name="TbxUserName" HorizontalAlignment="Left" Height="23" Margin="123,202,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="231" Grid.Column="2"/>
                     <Button x:Name="BtnConnect" Content="Connect" HorizontalAlignment="Left" Margin="497,202,0,0" VerticalAlignment="Top" Width="160" AutomationProperties.Name="BtnConnect" Height="26" Click="BtnConnect_Click" Grid.Column="2"/>
-                    <ComboBox x:Name="CbbAuthType" HorizontalAlignment="Left" Margin="123,18,0,0" VerticalAlignment="Top" Width="480" Grid.Column="2"/>
+                    <ComboBox x:Name="CbbAuthType" HorizontalAlignment="Left" Margin="123,18,0,0" VerticalAlignment="Top" Width="480" Grid.Column="2" SelectionChanged="CbbAuthType_SelectionChanged"/>
                     <Label Content="Type" HorizontalAlignment="Left" Margin="20,14,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.217,-0.308" Grid.Column="2"/>
                     <Button x:Name="BtnCrmServiceClient" Content="Connect Using CrmServiceClient" Grid.Column="2" HorizontalAlignment="Left" Margin="497,255,0,0" VerticalAlignment="Top" Width="215" Height="32" Click="BtnCrmServiceClient_Click"/>
+                    <Label x:Name="LblCrmServerEx" Content="" Grid.Column="2" HorizontalAlignment="Left" Margin="123,85,0,0" VerticalAlignment="Top" Width="480"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="TabMain" Header="Main">
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="78*"/>
+                        <ColumnDefinition Width="12*"/>
+                        <ColumnDefinition Width="66*"/>
                         <ColumnDefinition Width="691*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock x:Name="TbxUserInfo" HorizontalAlignment="Left" Margin="32,30,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="58" Width="484" Grid.ColumnSpan="2"/>
-                    <Button x:Name="BtnDisconnect" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="525,20,0,0" VerticalAlignment="Top" Width="75" Click="BtnDisconnect_Click"/>
+                    <TextBlock x:Name="TbxUserInfo" HorizontalAlignment="Left" Margin="19.75,30,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="58" Width="484" Grid.ColumnSpan="2" Grid.Column="1"/>
+                    <Button x:Name="BtnDisconnect" Content="Disconnect" Grid.Column="2" HorizontalAlignment="Left" Margin="524,30,0,0" VerticalAlignment="Top" Width="74" Click="BtnDisconnect_Click"/>
                 </Grid>
             </TabItem>
         </TabControl>
