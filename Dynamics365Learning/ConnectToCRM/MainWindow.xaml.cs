@@ -62,6 +62,28 @@ namespace ConnectToCRM
             }
         }
 
+        private void BtnCrmServiceClient_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var config = GetServerConfiguration();
+                var service = CrmServiceHelper.GetCrmServiceClient(config.crmConnString);
+                if (service != null && service.IsReady)
+                {
+                    WhoAmIRequest request = new WhoAmIRequest();
+                    var response = (WhoAmIResponse)service.Execute(request);
+                    MessageBox.Show(response.UserId.ToString());
+                }
+                else
+                {
+                    throw new Exception(service.LastCrmError);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
         /// <summary>
         /// Get server configuration from user input 
         /// </summary>
@@ -78,6 +100,7 @@ namespace ConnectToCRM
             var serverConfig = new ServerConfiguration();
             if (authType == 0) // IFD
             {
+                serverAddress = serverAddress.ToLower().Replace("https://", "").Replace("http://", "");
                 if (string.IsNullOrWhiteSpace(port))
                     serverConfig.OrganizationUri = new Uri(string.Format("https://{0}/XRMServices/2011/Organization.svc", serverAddress));
                 else
@@ -86,6 +109,12 @@ namespace ConnectToCRM
                 serverConfig.Credentials = new ClientCredentials();
                 serverConfig.Credentials.UserName.UserName = string.Format("{0}@{1}", userName, userDomain);
                 serverConfig.Credentials.UserName.Password = CrmServiceHelper.ConvertToUnsecureString(userPassword);
+
+                //Optional, construct the crmConnString if needed
+                var orgName = serverAddress.Substring(0,serverAddress.IndexOf("."));
+                serverConfig.crmConnString =string.Format( "AuthType=IFD; Url=https://{0}/{1}; Domain={2};Username={3}; Password={4}"
+                   ,serverAddress,orgName,userDomain, serverConfig.Credentials.UserName.UserName, serverConfig.Credentials.UserName.Password);
+
             }
             else if (authType == 1) //AD on-premise, TO TEST
             {
@@ -115,5 +144,6 @@ namespace ConnectToCRM
         {
             TabConnect.Visibility = Visibility.Visible;
         }
+
     }
 }

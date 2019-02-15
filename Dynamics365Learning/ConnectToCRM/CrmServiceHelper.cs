@@ -7,6 +7,7 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Client;
+using Microsoft.Xrm.Tooling.Connector;
 using System.Security;
 using System.Runtime.InteropServices;
 
@@ -15,7 +16,7 @@ namespace ConnectToCRM
     public class CrmServiceHelper
     {
         /// <summary>
-        /// Get Crm OrganizationService For IFD On-premise
+        /// Get Crm OrganizationService Proxy
         /// </summary>
         /// <param name="config"></param>
         public static OrganizationServiceProxy GetOrganizationServiceProxy(ServerConfiguration config)
@@ -25,6 +26,11 @@ namespace ConnectToCRM
             return serviceProxy;
         }
 
+        public static CrmServiceClient GetCrmServiceClient(string crmConnString)
+        {
+            CrmServiceClient service = new CrmServiceClient(crmConnString);
+            return service;
+        }
 
         #region SecureString
         public static string ConvertToUnsecureString(SecureString securePassword)

@@ -18,6 +18,7 @@ namespace ConnectToCRM
         public ClientCredentials Credentials { get; set; }
         public ClientCredentials DeviceCredentials { get; set; }
         public bool UserSSL { get; set; }
+        public string crmConnString { get; set; }
 
         public ServerConfiguration()
         {
@@ -28,7 +29,7 @@ namespace ConnectToCRM
 
         public void GetServerConfiguration()
         {
-            
+
         }
     }
 }
