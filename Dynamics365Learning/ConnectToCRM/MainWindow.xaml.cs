@@ -122,13 +122,12 @@ namespace ConnectToCRM
                    , serverAddress, orgName, userDomain, serverConfig.Credentials.UserName.UserName, serverConfig.Credentials.UserName.Password);
 
             }
-            else if (authType == 1) //AD on-premise, TO TEST
+            else if (authType == 1) //AD on-premise, ex: http://petitserver:5555/KDI/XRMServices/2011/Organization.svc
             {
                 var http = "http" + (useSSL ? "s" : null);
-                if (string.IsNullOrWhiteSpace(port))
-                    serverConfig.OrganizationUri = new Uri(string.Format("{0}://{1}/XRMServices/2011/Organization.svc", http, serverAddress));
-                else
-                    serverConfig.OrganizationUri = new Uri(string.Format("{0}://{1}:{2}/XRMServices/2011/Organization.svc", http, serverAddress, port));
+                if (!string.IsNullOrWhiteSpace(port))
+                    serverAddress = serverAddress.Replace("/", ":" + port + "/");
+                serverConfig.OrganizationUri = new Uri(string.Format("{0}://{1}/XRMServices/2011/Organization.svc", http, serverAddress));
 
                 serverConfig.Credentials = new ClientCredentials();
                 serverConfig.Credentials.Windows.ClientCredential = new NetworkCredential(userName, userPassword, userDomain);
@@ -164,7 +163,7 @@ namespace ConnectToCRM
         {
             if (CbbAuthType.SelectedIndex == 0) //IFD
             {
-                LblCrmServerEx.Content= "ex: orgname.domainname.com(without https://)";
+                LblCrmServerEx.Content = "ex: orgname.domainname.com(without https://)";
             }
             else if (CbbAuthType.SelectedIndex == 1) //AD
             {
