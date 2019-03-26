@@ -11,7 +11,7 @@ using Microsoft.Xrm.Tooling.Connector;
 using System.Security;
 using System.Runtime.InteropServices;
 
-namespace ConnectToCRM
+namespace CommonHelper
 {
     public class CrmServiceHelper
     {
@@ -52,10 +52,21 @@ namespace ConnectToCRM
         #endregion
     }
 
+    /// <summary>
+    /// Enum for CRM auth type
+    /// </summary>
     public enum CrmAuthType
     {
         IFD, AD, Office365
     }
 
-    
+    ///<summary>
+    ///Enum for CRM version
+    /// </summary>
+    public enum CrmVersion
+    {
+       CrmV8, CRMV9
+    }
+
+
 }

@@ -11,6 +11,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonOperations", "CommonO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonOperations", "CommonOperations\CommonOperations.csproj", "{80C125DB-27AA-44EE-8BDF-ADCBAC0361D1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonHelper", "CommonHelper", "{FB2C4A33-6C12-415C-9B66-FBDD5BE8B1C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonHelper", "CommonHelper\CommonHelper.csproj", "{8891319E-EC18-4C47-8268-77FEBF5C8B29}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +29,10 @@ Global
 		{80C125DB-27AA-44EE-8BDF-ADCBAC0361D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80C125DB-27AA-44EE-8BDF-ADCBAC0361D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80C125DB-27AA-44EE-8BDF-ADCBAC0361D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8891319E-EC18-4C47-8268-77FEBF5C8B29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8891319E-EC18-4C47-8268-77FEBF5C8B29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8891319E-EC18-4C47-8268-77FEBF5C8B29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8891319E-EC18-4C47-8268-77FEBF5C8B29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +40,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0B4FD433-34F4-4EF9-B918-8170FA349D61} = {7BA80765-E2CF-47EA-ACDC-32D1F1C5C701}
 		{80C125DB-27AA-44EE-8BDF-ADCBAC0361D1} = {70F08FF8-5532-481C-90E2-FDC8F1C0D1D4}
+		{8891319E-EC18-4C47-8268-77FEBF5C8B29} = {FB2C4A33-6C12-415C-9B66-FBDD5BE8B1C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {60ED754D-BD99-4B5A-8BCE-ECD56C3F85FE}
