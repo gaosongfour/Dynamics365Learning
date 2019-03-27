@@ -10,17 +10,25 @@ using Microsoft.Xrm.Sdk.Client;
 using Microsoft.Xrm.Tooling.Connector;
 using System.Security;
 using System.Runtime.InteropServices;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
 
 namespace CommonHelper
 {
     public class CrmServiceHelper
     {
+
         /// <summary>
         /// Get Crm OrganizationService Proxy
         /// </summary>
         /// <param name="config"></param>
         public static OrganizationServiceProxy GetOrganizationServiceProxy(ServerConfiguration config)
         {
+            //add the following code, otherwise, we will receive an error message like medata contains a ref that can not be resoved
+            ServicePointManager.ServerCertificateValidationCallback =
+                delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+                { return true; };
             var serviceProxy = new OrganizationServiceProxy(config.OrganizationUri, config.HomeRealmUrl, config.Credentials, config.DeviceCredentials);
             serviceProxy.EnableProxyTypes();
             return serviceProxy;
@@ -65,7 +73,7 @@ namespace CommonHelper
     /// </summary>
     public enum CrmVersion
     {
-       CrmV8, CRMV9
+        CrmV8, CRMV9
     }
 
 

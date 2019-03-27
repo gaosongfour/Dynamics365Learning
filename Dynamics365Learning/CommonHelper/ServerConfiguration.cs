@@ -88,7 +88,7 @@ namespace CommonHelper
             AuthType = authType;
             ServerAddress = serverAddress;
             PortNumber = portNumber;
-            OrgName = OrgName;
+            OrgName = orgName;
             UseSSL = useSSl;
             UserName = userName;
             Password = password;
@@ -100,56 +100,47 @@ namespace CommonHelper
 
         private void PrepareServerConfiguration()
         {
-            if (CrmVersion.Contains("8"))
+            
+            if (AuthType == "0") // IFD
             {
-                #region For CRM 8.X
-                if (AuthType == "0") // IFD
-                {
-                    ServerAddress = ServerAddress.ToLower().Replace("https://", "").Replace("http://", "");
-                    if (string.IsNullOrWhiteSpace(PortNumber))
-                        OrganizationUri = new Uri(string.Format("https://{0}/XRMServices/2011/Organization.svc", ServerAddress));
-                    else
-                        OrganizationUri = new Uri(string.Format("https://{0}:{1}/XRMServices/2011/Organization.svc", ServerAddress, PortNumber));
-
-                    Credentials = new ClientCredentials();
-                    Credentials.UserName.UserName = string.Format("{0}@{1}", UserName, DomainName);
-                    Credentials.UserName.Password = Password;
-
-                    //Optional, construct the crmConnString if needed
-                    CrmConnString = string.Format("AuthType=IFD; Url=https://{0}/{1}; Domain={2};Username={3}; Password={4}"
-                       , ServerAddress, OrgName, DomainName, Credentials.UserName.UserName, Credentials.UserName.Password);
-
-                }
-                else if (AuthType == "1") //AD on-premise, ex: http://petitserver:5555/KDI/XRMServices/2011/Organization.svc
-                {
-                    var http = "http" + (UseSSL ? "s" : null);
-                    if (!string.IsNullOrWhiteSpace(PortNumber))
-                        ServerAddress = ServerAddress.Replace("/", ":" + PortNumber + "/");
-                    OrganizationUri = new Uri(string.Format("{0}://{1}/XRMServices/2011/Organization.svc", http, ServerAddress));
-
-                    Credentials = new ClientCredentials();
-                    Credentials.Windows.ClientCredential = new NetworkCredential(UserName, Password, DomainName);
-                    //Or Use default windows crendential
-                    //Credentials.Windows.ClientCredential = (NetworkCredential)CredentialCache.DefaultCredentials;
-
-                }
-                else if (AuthType == "2")//online office365 not availiable
-                {
-                    //To do
-                }
+                ServerAddress = ServerAddress.ToLower().Replace("https://", "").Replace("http://", "");
+                if (string.IsNullOrWhiteSpace(PortNumber))
+                    OrganizationUri = new Uri(string.Format("https://{0}/XRMServices/2011/Organization.svc", ServerAddress));
                 else
-                    throw new Exception("Invalid AuthType");
-                #endregion
+                    OrganizationUri = new Uri(string.Format("https://{0}:{1}/XRMServices/2011/Organization.svc", ServerAddress, PortNumber));
 
+                Credentials = new ClientCredentials();
+                Credentials.UserName.UserName = string.Format("{0}@{1}", UserName, DomainName);
+                Credentials.UserName.Password = Password;
+
+                //Optional, construct the crmConnString if needed
+                CrmConnString = string.Format("AuthType=IFD; Url=https://{0}/{1}; Domain={2};Username={3}; Password={4}"
+                   , ServerAddress, OrgName, DomainName, Credentials.UserName.UserName, Credentials.UserName.Password);
+
+            }
+            else if (AuthType == "1") //AD on-premise, ex: http://petitserver:5555/KDI/XRMServices/2011/Organization.svc
+            {
+                var http = "http" + (UseSSL ? "s" : null);
+                if (!string.IsNullOrWhiteSpace(PortNumber))
+                    OrganizationUri = new Uri(string.Format("{0}://{1}:{2}/{3}/XRMServices/2011/Organization.svc", http, ServerAddress, PortNumber,OrgName));
+                else
+                    OrganizationUri = new Uri(string.Format("{0}://{1}/{2}/XRMServices/2011/Organization.svc", http, ServerAddress,OrgName));
+
+                Credentials = new ClientCredentials();
+                Credentials.Windows.ClientCredential = new NetworkCredential(UserName, Password, DomainName);
+                //Or Use default windows crendential
+                //Credentials.Windows.ClientCredential = (NetworkCredential)CredentialCache.DefaultCredentials;
+
+            }
+            else if (AuthType == "2")//online office365 not availiable
+            {
+                //To do
             }
             else
-            {
-                #region For CRM 9.X
-                #endregion
-            }
-
-
-
+                throw new Exception("Invalid AuthType");
+            
         }
+
     }
 }
+
