@@ -17,6 +17,7 @@ using System.ServiceModel.Description;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Crm.Sdk.Messages;
 using System.Net;
+using CommonHelper;
 
 namespace ConnectToCRM
 {
@@ -36,6 +37,10 @@ namespace ConnectToCRM
             //Load ComboBox from enum AuthType
             CbbAuthType.ItemsSource = Enum.GetValues(typeof(CrmAuthType)).Cast<CrmAuthType>();
             CbbAuthType.SelectedIndex = 0;
+
+            //load ComboBox from enum CrmVersion
+            CbbCrmVersion.ItemsSource = Enum.GetValues(typeof(CrmVersion)).Cast<CrmVersion>();
+            CbbCrmVersion.SelectedIndex = 1;
 
             //Hidden Main Tab
             TabMain.Visibility = Visibility.Hidden;
@@ -72,7 +77,7 @@ namespace ConnectToCRM
             try
             {
                 var config = GetServerConfiguration();
-                var service = CrmServiceHelper.GetCrmServiceClient(config.crmConnString);
+                var service = CrmServiceHelper.GetCrmServiceClient(config.CrmConnString);
                 if (service != null && service.IsReady)
                 {
                     WhoAmIRequest request = new WhoAmIRequest();
@@ -95,52 +100,19 @@ namespace ConnectToCRM
         /// </summary>
         private ServerConfiguration GetServerConfiguration()
         {
-            var authType = CbbAuthType.SelectedIndex;
+            var crmVersion = CbbCrmVersion.SelectedValue.ToString().Contains("8") ? "8" : "9";
+            var authType = CbbAuthType.SelectedIndex.ToString();
             var serverAddress = TbxCrmServer.Text;
             var port = TbxPort.Text;
+            var orgName = TbxOrgName.Text;
             var userName = TbxUserName.Text;
-            var userPassword = TbxPassword.SecurePassword;
+            var userPassword = CrmServiceHelper.ConvertToUnsecureString(TbxPassword.SecurePassword);
             var userDomain = TbxDomain.Text;
             var useSSL = CbxUseSSL.IsChecked.HasValue ? CbxUseSSL.IsChecked.Value : false;
 
             var serverConfig = new ServerConfiguration();
-            if (authType == 0) // IFD
-            {
-                serverAddress = serverAddress.ToLower().Replace("https://", "").Replace("http://", "");
-                if (string.IsNullOrWhiteSpace(port))
-                    serverConfig.OrganizationUri = new Uri(string.Format("https://{0}/XRMServices/2011/Organization.svc", serverAddress));
-                else
-                    serverConfig.OrganizationUri = new Uri(string.Format("https://{0}:{1}/XRMServices/2011/Organization.svc", serverAddress, port));
-
-                serverConfig.Credentials = new ClientCredentials();
-                serverConfig.Credentials.UserName.UserName = string.Format("{0}@{1}", userName, userDomain);
-                serverConfig.Credentials.UserName.Password = CrmServiceHelper.ConvertToUnsecureString(userPassword);
-
-                //Optional, construct the crmConnString if needed
-                var orgName = serverAddress.Substring(0, serverAddress.IndexOf("."));
-                serverConfig.crmConnString = string.Format("AuthType=IFD; Url=https://{0}/{1}; Domain={2};Username={3}; Password={4}"
-                   , serverAddress, orgName, userDomain, serverConfig.Credentials.UserName.UserName, serverConfig.Credentials.UserName.Password);
-
-            }
-            else if (authType == 1) //AD on-premise, ex: http://petitserver:5555/KDI/XRMServices/2011/Organization.svc
-            {
-                var http = "http" + (useSSL ? "s" : null);
-                if (!string.IsNullOrWhiteSpace(port))
-                    serverAddress = serverAddress.Replace("/", ":" + port + "/");
-                serverConfig.OrganizationUri = new Uri(string.Format("{0}://{1}/XRMServices/2011/Organization.svc", http, serverAddress));
-
-                serverConfig.Credentials = new ClientCredentials();
-                serverConfig.Credentials.Windows.ClientCredential = new NetworkCredential(userName, userPassword, userDomain);
-                //Or Use default windows crendential
-                //serverConfig.Credentials.Windows.ClientCredential = (NetworkCredential)CredentialCache.DefaultCredentials;
-
-            }
-            else if (authType == 2)//online office365 not availiable
-            {
-                //To do
-            }
-            else
-                throw new Exception("Invalid AuthType");
+            serverConfig.GetServerConfigurationFromUserInput(crmVersion, authType, serverAddress, port, orgName,
+                useSSL, userName, userPassword, userDomain);
 
             return serverConfig;
         }
@@ -167,7 +139,7 @@ namespace ConnectToCRM
             }
             else if (CbbAuthType.SelectedIndex == 1) //AD
             {
-                LblCrmServerEx.Content = "ex: servername/orgname";
+                LblCrmServerEx.Content = "ex: servername";
             }
             else
             {
