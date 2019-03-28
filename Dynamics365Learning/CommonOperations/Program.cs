@@ -10,7 +10,9 @@ namespace CommonOperations
     {
         static void Main(string[] args)
         {
-            CRUDOperations app = new CRUDOperations();
+            //CRUDOperations app = new CRUDOperations();
+            var app = new QueryOperation();
+
             app.Run();
         }
     }
