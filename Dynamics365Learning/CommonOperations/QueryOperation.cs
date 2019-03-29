@@ -38,6 +38,9 @@ namespace CommonOperations
 
                     // QueryExpression Paging with cookie
                     //RetrieveMultipleWithPaging(service);
+
+                    //Retrieve Contacts with linq
+                    //RetrieveMultipleWithLinq(service);
                 }
             }
             catch (FaultException<OrganizationServiceFault> ex)
@@ -223,6 +226,28 @@ namespace CommonOperations
                     //exit the while loop
                     break;
                 }
+            }
+        }
+        #endregion
+
+        #region QueryWithLinq
+        /// <summary>
+        /// Retrieve Contact with Linq
+        /// </summary>
+        /// <param name="service"></param>
+        public void RetrieveMultipleWithLinq(IOrganizationService service)
+        {
+            OrganizationServiceContext serviceContext = new OrganizationServiceContext(service);
+            var query = from c in serviceContext.CreateQuery(EntityName.Contact)
+                        select new
+                        {
+                            firstName = c.GetAttributeValue<string>("firstname"),
+                            lastName = c.GetAttributeValue<string>("lastname")
+                        };
+
+            foreach(var c in query)
+            {
+                Console.WriteLine("Retrieved Contact {0} {1}", c.firstName, c.lastName);
             }
         }
         #endregion
