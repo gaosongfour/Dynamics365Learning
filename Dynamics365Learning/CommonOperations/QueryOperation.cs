@@ -27,13 +27,18 @@ namespace CommonOperations
                 config.GetServerConfiguration();
 
                 //Init crm service
-                var service = CrmServiceHelper.GetOrganizationServiceProxy(config);
+                using (var service = CrmServiceHelper.GetOrganizationServiceProxy(config))
+                {
 
-                //Basic Query Expression
-                //RetrieveMultipleByQueryExpression(service);
+                    //Basic Query Expression
+                    //RetrieveMultipleByQueryExpression(service);
 
-                //Query Expression with LinkEntity
-                //RetrieveMultipleByQueryExpressionWithLinkEntity(service);
+                    //Query Expression with LinkEntity
+                    //RetrieveMultipleByQueryExpressionWithLinkEntity(service);
+
+                    // QueryExpression Paging with cookie
+                    //RetrieveMultipleWithPaging(service);
+                }
             }
             catch (FaultException<OrganizationServiceFault> ex)
             {
@@ -143,6 +148,81 @@ namespace CommonOperations
                 if (entity.Contains("primarycontact.fullname"))
                     contactFullname = entity.GetAttributeValue<AliasedValue>("primarycontact.fullname").Value.ToString();
                 Console.WriteLine("Print account: Guid:{0}; AccountName: {1}; PrimaryContact: {2}", entity.Id, accountName, contactFullname);
+            }
+        }
+
+        /// <summary>
+        /// QueryExpression Paging with cookie, As the total limit of RetriveMultiple is 5000, so consideration
+        /// of using Paging in queryexpression is need in some senarios
+        /// </summary>
+        /// <param name="service"></param>
+        public void RetrieveMultipleWithPaging(IOrganizationService service)
+        {
+            //The number of records per per page to retrive
+            int queryCount = 4;
+
+            //Initialize the page number
+            int pageNumber = 1;
+
+            //Initialize the number of records
+            int recordCount = 0;
+
+            //Define the queryexpression
+            var query = new QueryExpression()
+            {
+                EntityName = EntityName.Account,
+                ColumnSet = new ColumnSet(new string[] { "name" }),
+                Distinct = false,
+                Criteria = new FilterExpression()
+                {
+                    FilterOperator = LogicalOperator.And,
+                    Conditions =
+                    {
+                        new ConditionExpression("statecode", ConditionOperator.Equal,0)
+                    }
+                },
+                Orders =
+                {
+                    new OrderExpression("name", OrderType.Ascending)
+                },
+                //Define the Paging
+                PageInfo = new PagingInfo()
+                {
+                    Count = queryCount,
+                    PageNumber = pageNumber,
+                    PagingCookie = null
+                }
+            };
+
+            //Retrieve all accouts page by page
+            Console.WriteLine("RetrieveMultipleWithPaging-----------------------");
+            while (true)
+            {
+                var result = service.RetrieveMultiple(query);
+                if (result.Entities != null)
+                {
+                    //Print the page info
+                    Console.WriteLine("Page Number: {0}", query.PageInfo.PageNumber);
+
+                    //Print account
+                    foreach (var entity in result.Entities)
+                        Console.WriteLine("Print account {0}#: Guid:{1}; AccountName: {2}",
+                           ++recordCount, entity.Id, entity.GetAttributeValue<string>("name"));
+                }
+
+                if (result.MoreRecords)
+                {
+                    //Increase pageNumber
+                    query.PageInfo.PageNumber++;
+
+                    //Set the cookie
+                    query.PageInfo.PagingCookie = result.PagingCookie;
+                }
+                else
+                {
+                    //exit the while loop
+                    break;
+                }
             }
         }
         #endregion
