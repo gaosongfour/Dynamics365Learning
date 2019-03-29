@@ -239,15 +239,18 @@ namespace CommonOperations
         {
             OrganizationServiceContext serviceContext = new OrganizationServiceContext(service);
             var query = from c in serviceContext.CreateQuery(EntityName.Contact)
+                        join a in serviceContext.CreateQuery(EntityName.Account)
+                        on c["parentcustomerid"] equals a["accountid"]
                         select new
                         {
                             firstName = c.GetAttributeValue<string>("firstname"),
-                            lastName = c.GetAttributeValue<string>("lastname")
+                            lastName = c.GetAttributeValue<string>("lastname"),
+                            parentAccountName = a.GetAttributeValue<string>("name")
                         };
 
-            foreach(var c in query)
+            foreach (var c in query)
             {
-                Console.WriteLine("Retrieved Contact {0} {1}", c.firstName, c.lastName);
+                Console.WriteLine("Retrieved Contact {0} {1} , Parent Account: {2}", c.firstName, c.lastName, c.parentAccountName);
             }
         }
         #endregion
