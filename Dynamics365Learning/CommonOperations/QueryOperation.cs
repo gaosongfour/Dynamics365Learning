@@ -41,6 +41,9 @@ namespace CommonOperations
 
                     //Retrieve Contacts with linq
                     //RetrieveMultipleWithLinq(service);
+
+                    //Basic Query Example using fetchXml
+                    QueryWithFetchXml(service);
                 }
             }
             catch (FaultException<OrganizationServiceFault> ex)
@@ -255,6 +258,38 @@ namespace CommonOperations
         }
         #endregion
 
+        #region QueryWithFetchXml
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="service"></param>
+        public void QueryWithFetchXml(IOrganizationService service)
+        {
+            var query = @"
+                                     <fetch mapping='logical' count='9'>
+                                        <entity name='account'>
+                                            <attribute name='name'/>
+                                            <filter type='and'>
+                                                <condition attribute='statecode' operator='eq' value='0' />
+                                            </filter>
+                                            <link-entity name='contact' from='contactid' to='primarycontactid' alias='primarycontact'>
+                                                <attribute name='fullname' />
+                                            </link-entity>
+                                        </entity>
+                                     </fetch>";
+
+            var result = service.RetrieveMultiple(new FetchExpression(query));
+            int count = 1;
+
+            foreach (var a in result.Entities)
+            {
+                var accountName = a.GetAttributeValue<string>("name");
+                var primaryContactName = a.Contains("primarycontact.fullname") ?
+                    a.GetAttributeValue<AliasedValue>("primarycontact.fullname").Value.ToString() : null;
+                Console.WriteLine("Print Account {0}:{1}; PrimaryContact: {2}", count++, accountName, primaryContactName);
+            }
+        }
+        #endregion
 
     }
 }
