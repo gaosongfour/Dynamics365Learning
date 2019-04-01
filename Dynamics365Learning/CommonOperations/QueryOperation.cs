@@ -43,7 +43,10 @@ namespace CommonOperations
                     //RetrieveMultipleWithLinq(service);
 
                     //Basic Query Example using fetchXml
-                    QueryWithFetchXml(service);
+                    //QueryWithFetchXml(service);
+
+                    //Query using fetchxml with aggration and grouping
+                    //QueryWithFetchXmlAggreationAndGrouping(service);
                 }
             }
             catch (FaultException<OrganizationServiceFault> ex)
@@ -287,6 +290,36 @@ namespace CommonOperations
                 var primaryContactName = a.Contains("primarycontact.fullname") ?
                     a.GetAttributeValue<AliasedValue>("primarycontact.fullname").Value.ToString() : null;
                 Console.WriteLine("Print Account {0}:{1}; PrimaryContact: {2}", count++, accountName, primaryContactName);
+            }
+        }
+
+        /// <summary>
+        /// FetchXml with Aggregation and Grouping
+        /// </summary>
+        /// <param name="service"></param>
+        public void QueryWithFetchXmlAggreationAndGrouping(IOrganizationService service)
+        {
+            var query = @"
+                                     <fetch mapping='logical' aggregate='true'>
+                                        <entity name='opportunity'>
+                                            <attribute name='estimatedvalue' alias='estimatedvalue_sum' aggregate='sum'/>
+                                            <attribute name='estimatedvalue' alias='estimatedvalue_count' aggregate='count'/>
+                                            <attribute name='estimatedvalue' alias='estimatedvalue_avg' aggregate='avg'/>
+                                            <attribute name='statecode' alias='statecode' groupby='true'/>                                           
+                                        </entity>
+                                     </fetch>";
+
+            var result = service.RetrieveMultiple(new FetchExpression(query));
+
+            Console.WriteLine("===Display the sum of estimated value of all opportunities, grouping by statecode======");
+            Console.WriteLine("StateCode; Sum;Count;Avg");
+            foreach (var a in result.Entities)
+            {
+                var estimatedValueSum = ((Money)(a.GetAttributeValue<AliasedValue>("estimatedvalue_sum").Value)).Value;
+                var estimatedValueCount = (Int32)(a.GetAttributeValue<AliasedValue>("estimatedvalue_count").Value);
+                var estimatedValueAvg = ((Money)(a.GetAttributeValue<AliasedValue>("estimatedvalue_avg").Value)).Value;
+                var statecode = a.FormattedValues["statecode"];
+                Console.WriteLine("{0};{1};{2};{3}", statecode, estimatedValueSum, estimatedValueCount, estimatedValueAvg);
             }
         }
         #endregion
