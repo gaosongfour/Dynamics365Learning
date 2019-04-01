@@ -33,17 +33,24 @@ namespace CommonOperations
                 SendWhoAmIRequest(service);
 
                 //Create a new account
-                var accountEntityToCreate = PrepareAccountEntityToCreate();
-                var accountId = CreateEntity(service, accountEntityToCreate);
+                //var accountEntityToCreate = PrepareAccountEntityToCreate();
+                //var accountId = CreateEntity(service, accountEntityToCreate);
 
                 //Retrieve
-                var entityRetrieved = RetrieveEntity(service, accountId, EntityName.Account, null);
+                //var entityRetrieved = RetrieveEntity(service, accountId, EntityName.Account, null);
 
                 //Update
-                UpdateEntity(service, accountId, EntityName.Account);
+                //UpdateEntity(service, accountId, EntityName.Account);
 
                 //Delete
-                DeleteEntity(service, accountId, EntityName.Account);
+                //DeleteEntity(service, accountId, EntityName.Account);
+
+                //Define accountId
+                var accountId = new Guid("605F2550-9C4B-E911-9664-00155DDF3D03");
+
+                //Retrive an account and print all the attribute in string format
+                //var entity = RetrieveEntity(service, accountId, EntityName.Account, null);
+                //CrmDataHelper.PrintEntity(entity);
 
             }
             catch (FaultException<OrganizationServiceFault> ex)
@@ -169,5 +176,7 @@ namespace CommonOperations
             return entity;
         }
         #endregion
+
+     
     }
 }
