@@ -43,6 +43,11 @@ namespace CommonHelper
         /// </summary>
         public string CrmConnString { get; set; }
 
+        /// <summary>
+        /// Url for CRM Web API
+        /// </summary>
+        public string WebAPIServiceUrl { get; set; }
+
         public ServerConfiguration()
         {
             HomeRealmUrl = null;
@@ -73,6 +78,8 @@ namespace CommonHelper
                 Password = ConfigurationManager.AppSettings["Password"].ToString();
             if (ConfigurationManager.AppSettings.AllKeys.Contains("DomainName"))
                 DomainName = ConfigurationManager.AppSettings["DomainName"].ToString();
+            if (ConfigurationManager.AppSettings.AllKeys.Contains("WebAPIServiceUrl"))
+                WebAPIServiceUrl = ConfigurationManager.AppSettings["WebAPIServiceUrl"].ToString();
 
             PrepareServerConfiguration();
 
@@ -100,7 +107,7 @@ namespace CommonHelper
 
         private void PrepareServerConfiguration()
         {
-            
+
             if (AuthType == "0") // IFD
             {
                 ServerAddress = ServerAddress.ToLower().Replace("https://", "").Replace("http://", "");
@@ -122,9 +129,9 @@ namespace CommonHelper
             {
                 var http = "http" + (UseSSL ? "s" : null);
                 if (!string.IsNullOrWhiteSpace(PortNumber))
-                    OrganizationUri = new Uri(string.Format("{0}://{1}:{2}/{3}/XRMServices/2011/Organization.svc", http, ServerAddress, PortNumber,OrgName));
+                    OrganizationUri = new Uri(string.Format("{0}://{1}:{2}/{3}/XRMServices/2011/Organization.svc", http, ServerAddress, PortNumber, OrgName));
                 else
-                    OrganizationUri = new Uri(string.Format("{0}://{1}/{2}/XRMServices/2011/Organization.svc", http, ServerAddress,OrgName));
+                    OrganizationUri = new Uri(string.Format("{0}://{1}/{2}/XRMServices/2011/Organization.svc", http, ServerAddress, OrgName));
 
                 Credentials = new ClientCredentials();
                 Credentials.Windows.ClientCredential = new NetworkCredential(UserName, Password, DomainName);
@@ -138,7 +145,7 @@ namespace CommonHelper
             }
             else
                 throw new Exception("Invalid AuthType");
-            
+
         }
 
     }

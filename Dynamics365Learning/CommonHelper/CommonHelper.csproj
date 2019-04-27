@@ -86,7 +86,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CrmDataHelper.cs" />
+    <Compile Include="CrmHttpResponseException.cs" />
     <Compile Include="CrmServiceHelper.cs" />
+    <Compile Include="CrmWebAPIHelper.cs" />
     <Compile Include="EntityNameCollection\EntityName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerConfiguration.cs" />
