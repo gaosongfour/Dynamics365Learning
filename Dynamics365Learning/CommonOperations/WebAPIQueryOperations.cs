@@ -11,6 +11,7 @@ namespace CommonOperations
         {
             SendWhoAmIRequest();
             QueryEntityList();
+            QuerySingleEntity();
 
             Console.ReadLine();
         }
@@ -47,6 +48,8 @@ namespace CommonOperations
             request.AppendLine("&$top=3");
             request.AppendLine("&$filter=contains(name,'sample') and revenue gt 5000");
 
+            string[] cols = { "accountid", "name", "revenue" };
+
             try
             {
                 var result = await crmWebAPIHelper.SendGetRequestAsync(request.ToString());
@@ -56,10 +59,8 @@ namespace CommonOperations
                     var entityCollection = jsonResult["value"] as JArray;
                     foreach (JObject entity in entityCollection)
                     {
-                        if (entity.ContainsKey("accountid") && entity.ContainsKey("name"))
-                        {
-                            Console.WriteLine($"Account Name: {entity["name"].ToString()} Revenue: {entity["revenue"].ToString()}");
-                        }
+                        var printMessage = JsonHelper.PrintJsonResult(entity, cols);
+                        Console.WriteLine(printMessage);
                     }
                 }
 
@@ -67,6 +68,29 @@ namespace CommonOperations
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception: {ex.Message}");
+            }
+        }
+
+        public async void QuerySingleEntity()
+        {
+            var crmWebAPIHelper = new CrmWebAPIHelper();
+
+            //string[] cols = { "accountnumber", "name", "customersizecode", "createdon", "" };
+            var entityid = "565F2550-9C4B-E911-9664-00155DDF3D03";
+            var request = new StringBuilder($"accounts({entityid})?");
+            request.Append($"$select=accountnumber,name,customersizecode,createdon");
+
+
+            try
+            {
+                var result = await crmWebAPIHelper.SendGetRequestAsync(request.ToString());
+                var jsonResult = JObject.Parse(result);
+                var printMessage = JsonHelper.PrintJsonResult(jsonResult);
+                Console.WriteLine(printMessage);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Request failed: {ex.Message}; InnerEx: {ex.InnerException?.Message}");
             }
         }
     }

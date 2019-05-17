@@ -1,25 +1,21 @@
 ﻿using Newtonsoft.Json.Linq;
+using System;
+using System.Text;
 
 namespace CommonHelper
 {
     public class JsonHelper
     {
-        public static void PrintJsonResult(string jsonString)
+        public static string PrintJsonResult(JObject entity, string[] cols = null)
         {
-            var jsonResult = JObject.Parse(jsonString);
-            if(jsonResult.ContainsKey("value"))
+            var printMessage = new StringBuilder();
+            foreach (var prop in entity.Properties())
             {
-                var entityCollection = jsonResult["value"] as JArray;
-              
-                foreach(JObject entity in entityCollection)
-                {
-                    foreach(var prop in entity.Properties())
-                    {
-
-                    }
-
-                }
+                if (cols != null && Array.IndexOf(cols, prop.Name) == -1)
+                    continue;
+                printMessage.Append($"{prop.Name}:{prop.Value.ToString()};");
             }
+            return printMessage.ToString();
         }
     }
 }
