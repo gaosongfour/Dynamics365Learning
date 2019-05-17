@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
-using System.Net.Http;
-using Newtonsoft.Json.Schema;
+﻿using CommonHelper;
 using Newtonsoft.Json.Linq;
-using CommonHelper;
+using System;
+using System.Text;
 
 namespace CommonOperations
 {
@@ -17,16 +11,16 @@ namespace CommonOperations
         {
             SendWhoAmIRequest();
             QueryEntityList();
-            
+
             Console.ReadLine();
         }
 
         public async void SendWhoAmIRequest()
         {
-            
+
             var crmWebAPIHelper = new CrmWebAPIHelper();
             var request = "WhoAmI";
-            
+
             try
             {
                 var result = await crmWebAPIHelper.SendGetRequestAsync(request);
@@ -34,7 +28,7 @@ namespace CommonOperations
                 //read the response body and parse it
                 var body = JObject.Parse(result);
                 var userId = (Guid)body["UserId"];
-                Console.WriteLine($"The current user Id is {result}");
+                Console.WriteLine($"The current user Id is {userId.ToString()}");
 
             }
             catch (Exception ex)
@@ -45,13 +39,17 @@ namespace CommonOperations
 
         public async void QueryEntityList()
         {
-           
+
             var crmWebAPIHelper = new CrmWebAPIHelper();
-            var request = "accounts?$select=name&$top=3";
+            var request = new StringBuilder("accounts?");
+            request.AppendLine("$select=name,revenue");
+            request.AppendLine("&$orderby=name desc, revenue asc");
+            request.AppendLine("&$top=3");
+            request.AppendLine("&$filter=contains(name,'sample') and revenue gt 5000");
 
             try
             {
-                var result = await crmWebAPIHelper.SendGetRequestAsync(request);
+                var result = await crmWebAPIHelper.SendGetRequestAsync(request.ToString());
                 var jsonResult = JObject.Parse(result);
                 if (jsonResult.ContainsKey("value"))
                 {
@@ -60,7 +58,7 @@ namespace CommonOperations
                     {
                         if (entity.ContainsKey("accountid") && entity.ContainsKey("name"))
                         {
-                            Console.WriteLine($"Account: Id: {entity["accountid"].ToString()}-Name: {entity["name"].ToString()}");
+                            Console.WriteLine($"Account Name: {entity["name"].ToString()} Revenue: {entity["revenue"].ToString()}");
                         }
                     }
                 }
